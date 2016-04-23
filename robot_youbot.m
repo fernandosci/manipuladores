@@ -51,6 +51,9 @@ moveToPosXY(g_target);
 valueToGo = 3*pi/2;
 rotateTo(3,valueToGo);
 
+res =  g_vrep.simxSetIntegerSignal( g_id, 'km_mode', 2,...
+    g_vrep.simx_opmode_oneshot_wait);
+
 while true,
     tic
     if g_vrep.simxGetConnectionId(g_id) == -1,
@@ -62,10 +65,19 @@ while true,
     
     robot_youbot_fsm;
     
+    tpos = [ 1 1 1];
     
+    res = g_vrep.simxSetObjectPosition(g_id, g_h.ptarget, g_h.armRef, tpos,...
+        g_vrep.simx_opmode_oneshot);
     
-    [finished, forwBackVel, leftRightVel] = moveToPosXY;
-    [finished, rotVel] = rotateTo(3);
+    global g_youbotGripperTipPos;
+    global g_youbotGripperTipOri;
+    
+    g_youbotGripperTipPos
+    
+    g_youbotGripperTipOri
+    %[finished, forwBackVel, leftRightVel] = moveToPosXY;
+    %[finished, rotVel] = rotateTo(3);
     
     
     

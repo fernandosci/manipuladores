@@ -5,9 +5,16 @@ global g_youbotEuler;
 global g_vrep;
 global g_id;
 global g_h;
+global g_youbotGripperTipPos;
+global g_youbotGripperTipOri;
 
+%infrared sensor
 global g_youbot_hokuyo_pts;
 global g_youbot_hokuyo_contacts;
+
+%box target
+global g_target;
+global g_target_ref;
 
 %position and orientation
 [res, g_youbotPos] = g_vrep.simxGetObjectPosition(g_id, g_h.ref, -1,...
@@ -29,12 +36,18 @@ end
 % Read data from the Hokuyo sensor:
 [g_youbot_hokuyo_pts, g_youbot_hokuyo_contacts] = youbot_hokuyo(g_vrep, g_h, g_vrep.simx_opmode_buffer);
 
-global g_target;
-global g_target_ref;
+
 [res, g_target] = g_vrep.simxGetObjectPosition(g_id, g_target_ref, -1,...
     g_vrep.simx_opmode_buffer);
 vrchk(g_vrep, res, true);
 
 
+%read gripper info
+[res g_youbotGripperTipPos] = g_vrep.simxGetObjectPosition(g_id, g_h.ptip, g_h.armRef,...
+    g_vrep.simx_opmode_buffer);
+vrchk(g_vrep, res, true);
+[res g_youbotGripperTipOri] = g_vrep.simxGetObjectPosition(g_id, g_h.otip, g_h.armRef,...
+    g_vrep.simx_opmode_buffer);
+vrchk(g_vrep, res, true);
 end
 
