@@ -6,6 +6,7 @@ global g_armJointRanges;
 global g_startingJoints;
 global g_pickupJoints;
 global g_r22tilt;
+global g_gripper_max_points;
 
 disp('setting up constants');disp(' ');
 

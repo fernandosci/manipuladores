@@ -1,12 +1,11 @@
 function robot_youbot()
-addpath(strcat(pwd,'\navigation'),strcat(pwd,'\youbot'));
 global g_vrep;
 global g_id;
 global g_h;
 global g_target;
 global g_VERBOSE;
 
-settings;
+userinit;
 disp('initializing vrep thread');
 g_vrep=remApi('remoteApi');
 g_vrep.simxFinish(-1);
@@ -21,7 +20,7 @@ end
 fprintf('Connection %d to remote API server open.\n', g_id);
 
 % Make sure we close the connexion whenever the script is interrupted. %should be in main thread
-cleanupObj = onCleanup(@() cleanup_vrep(g_vrep, g_id));
+cleanupObj = onCleanup(@() custom_cleanup );
 robot_youbot_constants;
 robot_youbot_custom_init;
 robot_youbot_fetch;
@@ -51,8 +50,13 @@ moveToPosXY(g_target);
 valueToGo = 3*pi/2;
 rotateTo(3,valueToGo);
 
-res =  g_vrep.simxSetIntegerSignal( g_id, 'km_mode', 2,...
+res =  g_vrep.simxSetIntegerSignal( g_id, 'km_mode', 1,...
     g_vrep.simx_opmode_oneshot_wait);
+
+global g_youbotGripperTipPos;
+
+
+
 
 while true,
     tic
@@ -65,17 +69,16 @@ while true,
     
     robot_youbot_fsm;
     
-    tpos = [ 1 1 1];
     
-    res = g_vrep.simxSetObjectPosition(g_id, g_h.ptarget, g_h.armRef, tpos,...
-        g_vrep.simx_opmode_oneshot);
+%     gripper_joystick;
     
-    global g_youbotGripperTipPos;
-    global g_youbotGripperTipOri;
+    key = kbhit;
+    if (strcmpi(key,'L'))
+        gripper_setJoints([-0.000101 1.139116 -0.123400 0.097244 0.000681]);
+    elseif (strcmpi(key,'P'))
+        gripper_setJoints([-3.132165 1.309131 0.916073 -0.011899 0.004175]);
+    end
     
-    g_youbotGripperTipPos
-    
-    g_youbotGripperTipOri
     %[finished, forwBackVel, leftRightVel] = moveToPosXY;
     %[finished, rotVel] = rotateTo(3);
     
@@ -96,4 +99,14 @@ while true,
 end
 
 end % main function
+
+
+function [] = custom_cleanup()
+disp('cleanning up...');
+global g_vrep;
+global g_id;
+kbhit('stop');
+cleanup_vrep(g_vrep, g_id)
+disp('exitting');
+end
 

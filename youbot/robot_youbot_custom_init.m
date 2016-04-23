@@ -4,7 +4,6 @@ global g_id;
 global g_h;
 global g_target;
 global g_target_ref;
-global g_startingJoints;
 
 disp('initializing objects');disp(' ');
 
@@ -20,22 +19,24 @@ g_h = youbot_hokuyo_init(g_vrep, temporaryH);
 
 
 [res, g_target_ref] = g_vrep.simxGetObjectHandle(g_id, 'target', g_vrep.simx_opmode_oneshot_wait); vrchk(g_vrep, res);
-[res, g_target] = g_vrep.simxGetObjectPosition(g_id, g_target_ref, -1,...
-    g_vrep.simx_opmode_streaming);
-vrchk(g_vrep, res, true);
+[res, g_target] = g_vrep.simxGetObjectPosition(g_id, g_target_ref, -1, g_vrep.simx_opmode_streaming); vrchk(g_vrep, res, true);
+
+
+res = g_vrep.simxGetObjectVelocity (g_id, g_h.ref, g_vrep.simx_opmode_streaming); vrchk(g_vrep, res, true);
+
 
 disp('...');
-pause(.3);
+pause(0.5);
 
 % Set the arm to its starting configuration:
-res = g_vrep.simxPauseCommunication(g_id, true); vrchk(g_vrep, res);
-for i = 1:5,
-    res = g_vrep.simxSetJointTargetPosition(g_id, g_h.armJoints(i),...
-        g_startingJoints(i),...
-        g_vrep.simx_opmode_oneshot);
-    vrchk(g_vrep, res, true);
-end
-res = g_vrep.simxPauseCommunication(g_id, false); vrchk(g_vrep, res);
+% res = g_vrep.simxPauseCommunication(g_id, true); vrchk(g_vrep, res);
+% for i = 1:5,
+%     res = g_vrep.simxSetJointTargetPosition(g_id, g_h.armJoints(i),...
+%         g_startingJoints(i),...
+%         g_vrep.simx_opmode_oneshot);
+%     vrchk(g_vrep, res, true);
+% end
+% res = g_vrep.simxPauseCommunication(g_id, false); vrchk(g_vrep, res);
 
 robot_youbot_continuosplot_init;
 
