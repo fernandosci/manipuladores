@@ -1,4 +1,4 @@
-function youbot()
+function robot_youbot()
 addpath(strcat(pwd,'\navigation'),strcat(pwd,'\youbot'));
 global g_vrep;
 global g_id;
