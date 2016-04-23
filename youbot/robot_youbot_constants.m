@@ -7,6 +7,8 @@ global g_startingJoints;
 global g_pickupJoints;
 global g_r22tilt;
 
+disp('setting up constants');disp(' ');
+
 g_timestep = .05;
 g_wheelradius = 0.0937/2; % This value may be inaccurate. Check before using.
 

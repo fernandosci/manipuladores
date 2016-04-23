@@ -17,9 +17,9 @@ if (g_youbotEuler(3) < 0)
     g_youbotEuler(3) = 2*pi + g_youbotEuler(3);
 end
 
-
-fprintf('X: %f \tY: %f \tZ: %f\tTHETA: %f\n', g_youbotPos(1), g_youbotPos(2), g_youbotPos(3), rad2deg(g_youbotEuler(3)));
-
+if (g_VERBOSE >= 1)
+    fprintf('X: %f \tY: %f \tZ: %f\tTHETA: %f\n', g_youbotPos(1), g_youbotPos(2), g_youbotPos(3), rad2deg(g_youbotEuler(3)));
+end
 
 global g_target;
 global g_target_ref;

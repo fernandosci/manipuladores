@@ -4,8 +4,10 @@ global g_vrep;
 global g_id;
 global g_h;
 global g_target;
+global g_VERBOSE;
+g_VERBOSE = 0;
 
-disp('initializing vrep setup');
+disp('initializing vrep thread');
 g_vrep=remApi('remoteApi');
 g_vrep.simxFinish(-1);
 %should be in main thread
@@ -20,10 +22,7 @@ fprintf('Connection %d to remote API server open.\n', g_id);
 
 % Make sure we close the connexion whenever the script is interrupted. %should be in main thread
 cleanupObj = onCleanup(@() cleanup_vrep(g_vrep, g_id));
-
 robot_youbot_custom_init;
-
-disp('setting up constants');disp(' ');
 robot_youbot_fetch;
 
 % Parameters for controlling the youBot's wheels:
@@ -71,7 +70,7 @@ fetchYouBotStatus;
 moveToPosXY(g_target);
 valueToGo = 3*pi/2;
 rotateTo(3,valueToGo);
-            
+
 while true,
     tic
     if g_vrep.simxGetConnectionId(g_id) == -1,
@@ -83,13 +82,15 @@ while true,
     
     
     
-   [finished, forwBackVel, leftRightVel] = moveToPosXY;
-   [finished, rotVel] = rotateTo(3);
+    [finished, forwBackVel, leftRightVel] = moveToPosXY;
+    [finished, rotVel] = rotateTo(3);
     
-  
+    
     
     % Update wheel velocities
-    fprintf('forwBackVel: %f \tleftRightVel: %f \trotVel: %f\n', forwBackVel, leftRightVel,rotVel);
+    if (g_VERBOSE >= 1)
+        fprintf('forwBackVel: %f \tleftRightVel: %f \trotVel: %f\n', forwBackVel, leftRightVel,rotVel);
+    end
     g_h = youbot_drive(g_vrep, g_h, forwBackVel, leftRightVel, rotVel);
     
     % Make sure that we do not go faster that the simulator

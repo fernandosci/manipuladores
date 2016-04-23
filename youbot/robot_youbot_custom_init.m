@@ -5,6 +5,7 @@ global g_h;
 global g_target;
 global g_target_ref;
 
+disp('initializing objects');disp(' ');
 
 % This will only work in "continuous remote API server service"
 % See http://www.v-rep.eu/helpFiles/en/remoteApiServerSide.htm
