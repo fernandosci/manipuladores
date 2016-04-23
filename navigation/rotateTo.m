@@ -18,7 +18,7 @@ limitError = 0.01;
 
 if (nargin == 2)
     
-    finished = 0;
+    finished = false;
     rotVel = 0;
     
     g_rotateTo_targetAng = sign(targetAng)*wrapTo2Pi(targetAng);
@@ -26,8 +26,8 @@ if (nargin == 2)
     disp(targetAng);
     disp(g_rotateTo_targetAng);
     g_rotateTo_I = [0 0 0];
-    g_rotateTo_isRunning = 1;
-elseif (g_rotateTo_isRunning == 1)
+    g_rotateTo_isRunning = true;
+elseif (g_rotateTo_isRunning)
     error = g_rotateTo_targetAng - g_youbotEuler;
     
     [ out, g_rotateTo_I(axis), g_rotateTo_lastError(axis) ] = pidYoubot( error(axis), g_rotateTo_lastError(axis), kp, ki, kd, g_rotateTo_I(axis), deltaT, minI, maxI, minOut, maxOut );
@@ -50,14 +50,14 @@ elseif (g_rotateTo_isRunning == 1)
     
     
     if (error(3) > -limitError && error(3) < limitError)
-        finished = 1;
+        finished = true;
         rotVel = 0;
-        g_rotateTo_isRunning = 0;
+        g_rotateTo_isRunning = false;
     else
-        finished = 0;
+        finished = false;
     end
 else
-    finished = 1;
+    finished = true;
     rotVel = 0;
 end
 

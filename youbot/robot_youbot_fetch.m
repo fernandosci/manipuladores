@@ -1,4 +1,5 @@
 function [ ] = robot_youbot_fetch( )
+global g_VERBOSE;
 global g_youbotPos;
 global g_youbotEuler;
 global g_vrep;

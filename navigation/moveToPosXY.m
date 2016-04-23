@@ -18,15 +18,15 @@ limitError = 0.01;
 
 if (nargin == 1)
     
-    finished = 0;
+    finished = false;
     forwBackVel = 0;
     leftRightVel = 0;
     
     g_MoveToPos_targetPos = targetPos;
     g_MoveToPos_lastError =  targetPos - g_youbotPos;
     g_MoveToPos_I = [0 0];
-    g_MoveToPos_isRunning = 1;
-elseif (g_MoveToPos_isRunning == 1)
+    g_MoveToPos_isRunning = true;
+elseif (g_MoveToPos_isRunning)
     error = g_MoveToPos_targetPos - g_youbotPos;
     out = [0 0];
     for index = 1:2
@@ -51,17 +51,17 @@ elseif (g_MoveToPos_isRunning == 1)
     
     
     if (outDist > -limitError && outDist < limitError)
-        finished = 1;
+        finished = true;
         forwBackVel = 0;
         leftRightVel = 0;
-        g_MoveToPos_isRunning = 0;
+        g_MoveToPos_isRunning = false;
     else
-        finished = 0;
+        finished = false;
     end
     %fprintf('out1: %f\tout2: %f\t\n',out(1), out(2));
     %fprintf('outDist: %f \tglobalTargetAngle: %f \trelative Angle: %f\n\n', outDist, rad2deg( globalAngle), rad2deg(relativeAngle(3)));
 else
-    finished = 1;
+    finished = true;
     forwBackVel = 0;
     leftRightVel = 0;
 end

@@ -5,8 +5,8 @@ global g_id;
 global g_h;
 global g_target;
 global g_VERBOSE;
-g_VERBOSE = 0;
 
+settings;
 disp('initializing vrep thread');
 g_vrep=remApi('remoteApi');
 g_vrep.simxFinish(-1);
@@ -22,6 +22,7 @@ fprintf('Connection %d to remote API server open.\n', g_id);
 
 % Make sure we close the connexion whenever the script is interrupted. %should be in main thread
 cleanupObj = onCleanup(@() cleanup_vrep(g_vrep, g_id));
+robot_youbot_constants;
 robot_youbot_custom_init;
 robot_youbot_fetch;
 
@@ -30,30 +31,9 @@ forwBackVel = 0;
 leftRightVel = 0;
 rotVel = 0;
 
-disp('Starting robot');
-
-% Set the arm to its starting configuration:
-res = g_vrep.simxPauseCommunication(g_id, true); vrchk(g_vrep, res);
-for i = 1:5,
-    res = g_vrep.simxSetJointTargetPosition(g_id, g_h.armJoints(i),...
-        g_startingJoints(i),...
-        g_vrep.simx_opmode_oneshot);
-    vrchk(g_vrep, res, true);
-end
-res = g_vrep.simxPauseCommunication(g_id, false); vrchk(g_vrep, res);
-
-plotData = true;
-if plotData,
-    subplot(211)
-    drawnow;
-    [X,Y] = meshgrid(-5:.25:5,-5.5:.25:2.5);
-    X = reshape(X, 1, []);
-    Y = reshape(Y, 1, []);
-end
-
 % Make sure everything is settled before we start
 pause(2);
-
+disp('Starting robot');
 
 
 [res homeGripperPosition] = ...
@@ -64,7 +44,7 @@ vrchk(g_vrep, res, true);
 fsm = 'rotate';
 angl = -pi/2;
 
-fetchYouBotStatus;
+robot_youbot_fetch;
 
 
 moveToPosXY(g_target);
@@ -77,6 +57,8 @@ while true,
         error('Lost connection to remote API.');
     end
     robot_youbot_fetch;
+    
+    robot_youbot_continuosplot;
     
     robot_youbot_fsm;
     

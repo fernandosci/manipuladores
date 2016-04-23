@@ -4,6 +4,7 @@ global g_id;
 global g_h;
 global g_target;
 global g_target_ref;
+global g_startingJoints;
 
 disp('initializing objects');disp(' ');
 
@@ -25,6 +26,19 @@ vrchk(g_vrep, res, true);
 
 disp('...');
 pause(.3);
+
+% Set the arm to its starting configuration:
+res = g_vrep.simxPauseCommunication(g_id, true); vrchk(g_vrep, res);
+for i = 1:5,
+    res = g_vrep.simxSetJointTargetPosition(g_id, g_h.armJoints(i),...
+        g_startingJoints(i),...
+        g_vrep.simx_opmode_oneshot);
+    vrchk(g_vrep, res, true);
+end
+res = g_vrep.simxPauseCommunication(g_id, false); vrchk(g_vrep, res);
+
+robot_youbot_continuosplot_init;
+
 
 end
 
