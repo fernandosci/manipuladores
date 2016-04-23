@@ -1,4 +1,4 @@
-function [ ] = setupConstants( )
+function [ ] = robot_youbot_constants( )
 % Constants:
 global g_wheelradius;
 global g_timestep;

@@ -1,4 +1,4 @@
-function [ ] = fetchYouBotStatus( )
+function [ ] = robot_youbot_fetch( )
 global g_youbotPos;
 global g_youbotEuler;
 global g_vrep;

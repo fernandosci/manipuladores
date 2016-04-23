@@ -8,6 +8,7 @@ global g_target;
 disp('initializing vrep setup');
 g_vrep=remApi('remoteApi');
 g_vrep.simxFinish(-1);
+%should be in main thread
 g_id = g_vrep.simxStart('127.0.0.1', 19997, true, true, 2000, 5);
 
 if g_id < 0,
@@ -17,37 +18,18 @@ if g_id < 0,
 end
 fprintf('Connection %d to remote API server open.\n', g_id);
 
-% Make sure we close the connexion whenever the script is interrupted.
+% Make sure we close the connexion whenever the script is interrupted. %should be in main thread
 cleanupObj = onCleanup(@() cleanup_vrep(g_vrep, g_id));
 
-% This will only work in "continuous remote API server service"
-% See http://www.v-rep.eu/helpFiles/en/remoteApiServerSide.htm
-res = g_vrep.simxStartSimulation(g_id, g_vrep.simx_opmode_oneshot_wait);
-vrchk(g_vrep, res);
-
-% Retrieve all handles, and stream arm and wheel joints, the robot's pose,
-% the Hokuyo, and the arm tip pose.
-temporaryH = youbot_init(g_vrep, g_id);
-g_h = youbot_hokuyo_init(g_vrep, temporaryH);
-
-global g_target_ref;
-[res, g_target_ref] = g_vrep.simxGetObjectHandle(g_id, 'target', g_vrep.simx_opmode_oneshot_wait); vrchk(g_vrep, res);
-[res, g_target] = g_vrep.simxGetObjectPosition(g_id, g_target_ref, -1,...
-    g_vrep.simx_opmode_streaming);
-vrchk(g_vrep, res, true);
-
-disp('...');
-pause(.3);
+robot_youbot_custom_init;
 
 disp('setting up constants');disp(' ');
-setupConstants;
-
+robot_youbot_fetch;
 
 % Parameters for controlling the youBot's wheels:
 forwBackVel = 0;
 leftRightVel = 0;
 rotVel = 0;
-prevOri = 0; prevLoc = 0;
 
 disp('Starting robot');
 
@@ -95,8 +77,9 @@ while true,
     if g_vrep.simxGetConnectionId(g_id) == -1,
         error('Lost connection to remote API.');
     end
+    robot_youbot_fetch;
     
-    fetchYouBotStatus;
+    robot_youbot_fsm;
     
     
     
