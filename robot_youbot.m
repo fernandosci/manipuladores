@@ -3,6 +3,7 @@ global g_vrep;
 global g_id;
 global g_h;
 global g_target;
+global g_timestep;
 global g_VERBOSE;
 
 userinit;
@@ -49,14 +50,6 @@ robot_youbot_fetch;
 moveToPosXY(g_target);
 valueToGo = 3*pi/2;
 rotateTo(3,valueToGo);
-
-res =  g_vrep.simxSetIntegerSignal( g_id, 'km_mode', 1,...
-    g_vrep.simx_opmode_oneshot_wait);
-
-global g_youbotGripperTipPos;
-
-
-
 
 while true,
     tic

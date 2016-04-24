@@ -16,6 +16,7 @@ global g_youbot_GripperTipOri;
 
 global g_youbot_joints_position;
 global g_youbot_joints_km_mode;
+global g_youbot_joints_isOpen;
 
 
 %infrared sensor
@@ -45,7 +46,6 @@ end
 
 
 %velocity
-
 [res, g_youbotVelLin, g_youbotVelAng ] = g_vrep.simxGetObjectVelocity (g_id, g_h.ref, g_vrep.simx_opmode_streaming); vrchk(g_vrep, res, true);
 
 % Read data from the Hokuyo sensor:
@@ -70,5 +70,6 @@ for i = 1:5,
 end
 
 [res, g_youbot_joints_km_mode] = g_vrep.simxGetIntegerSignal(g_id,'km_mode',g_vrep.simx_opmode_buffer );vrchk(g_vrep, res, true);
+[res, g_youbot_joints_isOpen] = g_vrep.simxGetIntegerSignal(g_id,'gripper_open',g_vrep.simx_opmode_buffer );vrchk(g_vrep, res, true);
 
 end
