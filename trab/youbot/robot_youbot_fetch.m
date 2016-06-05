@@ -1,10 +1,5 @@
 function [ ] = robot_youbot_fetch( )
 global g_VERBOSE;
-global g_youbotPos;
-global g_youbotEuler;
-global g_youbotVelLin;
-global g_youbotVelAng;
-
 
 global g_vrep;
 global g_id;
@@ -24,10 +19,19 @@ global g_youbot_hokuyo_pts;
 global g_youbot_hokuyo_contacts;
 
 %box target
-global g_target;
+global g_target_pos;
 global g_target_ref;
+for index = 1:length(g_target_pos)
+    [res, g_target_pos{index}] = g_vrep.simxGetObjectPosition(g_id, g_target_ref(index), -1,...
+    g_vrep.simx_opmode_buffer);
+    vrchk(g_vrep, res, true);
+end
+
 
 %position and orientation
+global g_youbotPos;
+global g_youbotEuler;
+
 [res, g_youbotPos] = g_vrep.simxGetObjectPosition(g_id, g_h.ref, -1,...
     g_vrep.simx_opmode_buffer);
 vrchk(g_vrep, res, true);
@@ -46,15 +50,13 @@ end
 
 
 %velocity
+global g_youbotVelLin;
+global g_youbotVelAng;
+
 [res, g_youbotVelLin, g_youbotVelAng ] = g_vrep.simxGetObjectVelocity (g_id, g_h.ref, g_vrep.simx_opmode_streaming); vrchk(g_vrep, res, true);
 
 % Read data from the Hokuyo sensor:
 [g_youbot_hokuyo_pts, g_youbot_hokuyo_contacts] = youbot_hokuyo(g_vrep, g_h, g_vrep.simx_opmode_buffer);
-
-
-[res, g_target] = g_vrep.simxGetObjectPosition(g_id, g_target_ref, -1,...
-    g_vrep.simx_opmode_buffer);
-vrchk(g_vrep, res, true);
 
 
 %read gripper info

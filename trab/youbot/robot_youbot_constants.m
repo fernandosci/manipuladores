@@ -8,6 +8,8 @@ global g_pickupJoints;
 global g_r22tilt;
 global g_gripper_max_points;
 
+global g_target_names;
+
 disp('setting up constants');disp(' ');
 
 g_timestep = .05;
@@ -27,12 +29,22 @@ g_pickupJoints = [90*pi/180, 19.6*pi/180, 113*pi/180, -41*pi/180, 0*pi/180];
 % Tilt of the Rectangle22 box
 g_r22tilt = -44.56/180*pi;
 
+g_target_names = cell(5,1);
+
+g_target_names{1} = 'redRectangle_ref';
+g_target_names{2} = 'orangeRectangle_ref';
+g_target_names{3} = 'blueRectangle_ref';
+g_target_names{4} = 'greenRectangle_ref';
+g_target_names{5} = 'yellowRectangle_ref';
+
+
 assignin('caller', 'g_wheelradius' ,g_wheelradius );
 assignin('caller', 'g_timestep' ,g_timestep );
 assignin('caller', 'g_armJointRanges' ,g_armJointRanges );
 assignin('caller', 'g_startingJoints' ,g_startingJoints );
 assignin('caller', 'g_pickupJoints' ,g_pickupJoints );
 assignin('caller', 'g_r22tilt' ,g_r22tilt );
+assignin('caller', 'g_target_names' ,g_target_names );
 
 end
 

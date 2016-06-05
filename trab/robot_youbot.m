@@ -2,7 +2,7 @@ function robot_youbot()
 global g_vrep;
 global g_id;
 global g_h;
-global g_target;
+global g_target_pos;
 global g_timestep;
 global g_VERBOSE;
 
@@ -20,7 +20,7 @@ if g_id < 0,
 end
 fprintf('Connection %d to remote API server open.\n', g_id);
 
-% Make sure we close the connexion whenever the script is interrupted. %should be in main thread
+% Make sure we close the connexion whenever the script is interrupted. %must be in main thread
 cleanupObj = onCleanup(@() custom_cleanup );
 robot_youbot_constants;
 robot_youbot_custom_init;
@@ -47,7 +47,7 @@ angl = -pi/2;
 robot_youbot_fetch;
 
 
-moveToPosXY(g_target);
+moveToPosXY(g_target_pos{1});
 valueToGo = 3*pi/2;
 rotateTo(3,valueToGo);
 
@@ -76,7 +76,7 @@ while true,
     %[finished, rotVel] = rotateTo(3);
     
     if (finished)
-        moveToPosXY(g_target)
+        moveToPosXY(g_target_pos{2})
     end
     
     % Update wheel velocities

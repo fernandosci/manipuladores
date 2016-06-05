@@ -34,7 +34,7 @@ elseif (g_MoveToPos_isRunning)
     end
     
     %fprintf('error1: %f \t error2: %f\t \n', error(1), error(2));
-    globalAngle = angleBetween2CartesianPointsXY(g_youbotPos, g_MoveToPos_targetPos);
+    globalAngle = globalAngleBetween2CartesianPointsXY(g_youbotPos, g_MoveToPos_targetPos);
     relativeAngle = angGlobalToRelative([0 0 globalAngle]);
     
     

@@ -34,7 +34,7 @@ elseif (g_rotateTo_isRunning)
     
     
     %fprintf('error: %f \tout: %f \tyoubotEuler: %f\n', error(3),out,g_youbotEuler(axis));
-    %globalAngle = angleBetween2CartesianPointsXY(g_youbotPos, g_MoveToPos_targetPos);
+    %globalAngle = globalAngleBetween2CartesianPointsXY(g_youbotPos, g_MoveToPos_targetPos);
     %relativeAngle = angGlobalToRelative([0 0 globalAngle]);
     
     
