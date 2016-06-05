@@ -63,19 +63,21 @@ while true,
     robot_youbot_fsm;
     
     
-%     gripper_joystick;
+     gripper_joystick;
     
-    key = kbhit;
-    if (strcmpi(key,'L'))
-        gripper_setJoints([-0.000101 1.139116 -0.123400 0.097244 0.000681]);
-    elseif (strcmpi(key,'P'))
-        gripper_setJoints([-3.132165 1.309131 0.916073 -0.011899 0.004175]);
-    end
+%     key = kbhit;
+%     if (strcmpi(key,'L'))
+%         gripper_setJoints([-0.000101 1.139116 -0.123400 0.097244 0.000681]);
+%     elseif (strcmpi(key,'P'))
+%         gripper_setJoints([-3.132165 1.309131 0.916073 -0.011899 0.004175]);
+%     end
     
-    %[finished, forwBackVel, leftRightVel] = moveToPosXY;
+    [finished, forwBackVel, leftRightVel] = moveToPosXY;
     %[finished, rotVel] = rotateTo(3);
     
-    
+    if (finished)
+        moveToPosXY(g_target)
+    end
     
     % Update wheel velocities
     if (g_VERBOSE >= 1)
