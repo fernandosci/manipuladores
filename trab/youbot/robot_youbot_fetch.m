@@ -27,6 +27,12 @@ for index = 1:length(g_target_pos)
     vrchk(g_vrep, res, true);
 end
 
+% not expected to move...
+% global g_basket_pos;
+% global g_basket_ref;
+% [res, g_basket_pos] = g_vrep.simxGetObjectPosition(g_id, g_basket_ref, -1,...
+%     g_vrep.simx_opmode_buffer);
+%     vrchk(g_vrep, res, true);
 
 %position and orientation
 global g_youbotPos;

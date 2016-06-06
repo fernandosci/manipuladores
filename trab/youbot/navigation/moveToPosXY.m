@@ -1,22 +1,23 @@
-function [ finished, forwBackVel, leftRightVel ] = moveToPosXY( targetPos )
+function [ finished, forwBackVel, leftRightVel ] = moveToPosXY(mode, targetPos )
 
 global g_youbotPos;
 global g_MoveToPos_I;
 global g_MoveToPos_lastError;
 global g_MoveToPos_targetPos;
 global g_MoveToPos_isRunning;
+global g_MoveToPos_mode;
 
 maxI = 0.1;
 minI = -maxI;
 maxOut = 240*pi/180;
 minOut = -maxOut;
 deltaT = 50e-3;
-kp = 5;
+kp = 4;
 ki = 0;
-kd = 2;
+kd = 0;
 limitError = 0.01;
 
-if (nargin == 1)
+if (nargin == 2)
     
     finished = false;
     forwBackVel = 0;
@@ -26,7 +27,8 @@ if (nargin == 1)
     g_MoveToPos_lastError =  targetPos - g_youbotPos;
     g_MoveToPos_I = [0 0];
     g_MoveToPos_isRunning = true;
-elseif (g_MoveToPos_isRunning)
+    g_MoveToPos_mode = mode;
+elseif (g_MoveToPos_isRunning || g_MoveToPos_mode == 1)
     error = g_MoveToPos_targetPos - g_youbotPos;
     out = [0 0];
     for index = 1:2
@@ -36,9 +38,7 @@ elseif (g_MoveToPos_isRunning)
     %fprintf('error1: %f \t error2: %f\t \n', error(1), error(2));
     globalAngle = globalAngleBetween2CartesianPointsXY(g_youbotPos, g_MoveToPos_targetPos);
     relativeAngle = angGlobalToRelative([0 0 globalAngle]);
-    
-    
-    
+
     outDist = sqrt(out(1)^2 + out(2)^2);
     % outDist = sqrt(out(1)^2 + out(2)^2);
     %negativo -> pra frente (0 graus)

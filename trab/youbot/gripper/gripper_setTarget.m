@@ -4,8 +4,6 @@ global g_id;
 global g_h;
 global g_youbot_gripper_targetPos;
 global g_youbot_gripper_targetOri;
-global g_youbot_joints_km_mode;
-
 
 if (nargin == 0 || nargin > 2)
     fprintf('gripper_setTarget-> invalid number of args\n');
@@ -13,11 +11,7 @@ if (nargin == 0 || nargin > 2)
 end
 
 km_mode = nargin;
-if (g_youbot_joints_km_mode ~= km_mode)
-res =  g_vrep.simxSetIntegerSignal( g_id, 'km_mode', km_mode,...
-    g_vrep.simx_opmode_oneshot_wait);vrchk(g_vrep, res, true);
-    g_youbot_joints_km_mode = km_mode; %just in case
-end
+gripper_setKmMode(km_mode);
 
 g_youbot_gripper_targetPos = targetPos;
 if (nargin == 2)

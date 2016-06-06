@@ -22,14 +22,17 @@ fprintf('Connection %d to remote API server open.\n', g_id);
 
 % Make sure we close the connexion whenever the script is interrupted. %must be in main thread
 cleanupObj = onCleanup(@() custom_cleanup );
+
+%initialize everything
 robot_youbot_constants;
 robot_youbot_custom_init;
 robot_youbot_fetch;
 
 % Parameters for controlling the youBot's wheels:
-forwBackVel = 0;
-leftRightVel = 0;
-rotVel = 0;
+global g_vel;
+g_vel.forwBackVel = 0;
+g_vel.leftRightVel = 0;
+g_vel.rotVel = 0;
 
 % Make sure everything is settled before we start
 pause(2);
@@ -41,15 +44,11 @@ disp('Starting robot');
     g_h.armRef,...
     g_vrep.simx_opmode_buffer);
 vrchk(g_vrep, res, true);
-fsm = 'rotate';
 angl = -pi/2;
 
 robot_youbot_fetch;
 
-
-moveToPosXY(g_target_pos{1});
-valueToGo = 3*pi/2;
-rotateTo(3,valueToGo);
+robot_youbot_fsm('init');
 
 while true,
     tic
@@ -71,20 +70,17 @@ while true,
 %     elseif (strcmpi(key,'P'))
 %         gripper_setJoints([-3.132165 1.309131 0.916073 -0.011899 0.004175]);
 %     end
-    
-    [finished, forwBackVel, leftRightVel] = moveToPosXY;
-    %[finished, rotVel] = rotateTo(3);
-    
-    if (finished)
-        moveToPosXY(g_target_pos{2})
-    end
+
     
     % Update wheel velocities
     if (g_VERBOSE >= 1)
-        fprintf('forwBackVel: %f \tleftRightVel: %f \trotVel: %f\n', forwBackVel, leftRightVel,rotVel);
+        fprintf('forwBackVel: %f \tleftRightVel: %f \trotVel: %f\n', g_vel.forwBackVel, g_vel.leftRightVel, g_vel.rotVel);
     end
-    g_h = youbot_drive(g_vrep, g_h, forwBackVel, leftRightVel, rotVel);
+    g_h = youbot_drive(g_vrep, g_h, g_vel.forwBackVel, g_vel.leftRightVel, g_vel.rotVel);
     
+    g_vel.forwBackVel = 0;
+    g_vel.leftRightVel = 0;
+    g_vel.rotVel = 0;
     % Make sure that we do not go faster that the simulator
     elapsed = toc;
     timeleft = g_timestep-elapsed;

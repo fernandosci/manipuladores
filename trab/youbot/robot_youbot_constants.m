@@ -32,10 +32,10 @@ g_r22tilt = -44.56/180*pi;
 g_target_names = cell(5,1);
 
 g_target_names{1} = 'redRectangle_ref';
-g_target_names{2} = 'orangeRectangle_ref';
-g_target_names{3} = 'blueRectangle_ref';
-g_target_names{4} = 'greenRectangle_ref';
-g_target_names{5} = 'yellowRectangle_ref';
+g_target_names{2} = 'blueRectangle_ref';
+g_target_names{3} = 'yellowRectangle_ref';
+g_target_names{4} = 'orangeRectangle_ref';
+g_target_names{5} = 'greenRectangle_ref';
 
 
 assignin('caller', 'g_wheelradius' ,g_wheelradius );

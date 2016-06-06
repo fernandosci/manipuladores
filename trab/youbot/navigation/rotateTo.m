@@ -1,10 +1,12 @@
-function [ finished, rotVel ] = rotateTo( axis, targetAng )
+function [ finished, rotVel, err ] = rotateTo(mode, targetAng )
 
 global g_youbotEuler;
 global g_rotateTo_I;
 global g_rotateTo_lastError;
 global g_rotateTo_targetAng;
 global g_rotateTo_isRunning;
+global g_rotateTo_mode;
+global g_rotateTo_axis;
 
 maxI = 0.1;
 minI = -maxI;
@@ -15,8 +17,9 @@ kp = 1;
 ki = 0;
 kd = 0;
 limitError = 0.01;
+axis = 3;
 
-if (nargin == 2)
+if (nargin == 3)
     
     finished = false;
     rotVel = 0;
@@ -27,10 +30,12 @@ if (nargin == 2)
     disp(g_rotateTo_targetAng);
     g_rotateTo_I = [0 0 0];
     g_rotateTo_isRunning = true;
-elseif (g_rotateTo_isRunning)
+    g_rotateTo_mode = mode;
+    g_rotateTo_axis = axis;
+elseif (g_rotateTo_isRunning || g_rotateTo_mode == 1)
     error = g_rotateTo_targetAng - g_youbotEuler;
     
-    [ out, g_rotateTo_I(axis), g_rotateTo_lastError(axis) ] = pidYoubot( error(axis), g_rotateTo_lastError(axis), kp, ki, kd, g_rotateTo_I(axis), deltaT, minI, maxI, minOut, maxOut );
+    [ out, g_rotateTo_I(g_rotateTo_axis), g_rotateTo_lastError(g_rotateTo_axis) ] = pidYoubot( error(g_rotateTo_axis), g_rotateTo_lastError(g_rotateTo_axis), kp, ki, kd, g_rotateTo_I(g_rotateTo_axis), deltaT, minI, maxI, minOut, maxOut );
     
     
     %fprintf('error: %f \tout: %f \tyoubotEuler: %f\n', error(3),out,g_youbotEuler(axis));
@@ -47,9 +52,9 @@ elseif (g_rotateTo_isRunning)
     %leftRightVel = outDist * sin(relativeAngle(3));
     
     rotVel = out;
+    err = error(g_rotateTo_axis);
     
-    
-    if (error(3) > -limitError && error(3) < limitError)
+    if (error(g_rotateTo_axis) > -limitError && error(g_rotateTo_axis) < limitError)
         finished = true;
         rotVel = 0;
         g_rotateTo_isRunning = false;
