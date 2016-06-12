@@ -28,7 +28,7 @@ if (nargin == 2)
     g_MoveToPos_I = [0 0];
     g_MoveToPos_isRunning = true;
     g_MoveToPos_mode = mode;
-elseif (g_MoveToPos_isRunning || g_MoveToPos_mode == 1)
+elseif (g_MoveToPos_isRunning == true || g_MoveToPos_mode == 1)
     error = g_MoveToPos_targetPos - g_youbotPos;
     out = [0 0];
     for index = 1:2

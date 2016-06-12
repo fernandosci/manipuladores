@@ -32,6 +32,11 @@ global g_basket_ref;
 
 res = g_vrep.simxGetObjectVelocity (g_id, g_h.ref, g_vrep.simx_opmode_streaming); vrchk(g_vrep, res, true);
 
+global g_youbot_armRefPos;
+global g_youbot_armRefOri;
+[res, g_youbot_armRefPos] = g_vrep.simxGetObjectPosition(g_id, g_h.armRef, -1, g_vrep.simx_opmode_streaming); vrchk(g_vrep, res, true);
+[res, g_youbot_armRefOri] = g_vrep.simxGetObjectOrientation(g_id, g_h.r22, -1, g_vrep.simx_opmode_streaming); vrchk(g_vrep, res, true);
+
 disp('...');
 pause(0.5);
 

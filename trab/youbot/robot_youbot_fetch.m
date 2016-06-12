@@ -6,6 +6,7 @@ global g_id;
 global g_h;
 
 %gripper
+global g_youbot_armRefPos;
 global g_youbot_GripperTipPos;
 global g_youbot_GripperTipOri;
 
@@ -59,7 +60,7 @@ end
 global g_youbotVelLin;
 global g_youbotVelAng;
 
-[res, g_youbotVelLin, g_youbotVelAng ] = g_vrep.simxGetObjectVelocity (g_id, g_h.ref, g_vrep.simx_opmode_streaming); vrchk(g_vrep, res, true);
+[res, g_youbotVelLin, g_youbotVelAng ] = g_vrep.simxGetObjectVelocity (g_id, g_h.ref, g_vrep.simx_opmode_buffer ); vrchk(g_vrep, res, true);
 
 % Read data from the Hokuyo sensor:
 [g_youbot_hokuyo_pts, g_youbot_hokuyo_contacts] = youbot_hokuyo(g_vrep, g_h, g_vrep.simx_opmode_buffer);
@@ -71,6 +72,11 @@ global g_youbotVelAng;
 vrchk(g_vrep, res, true);
 [res, g_youbot_GripperTipOri] = g_vrep.simxGetObjectOrientation(g_id, g_h.otip, g_h.r22,...
     g_vrep.simx_opmode_buffer);
+vrchk(g_vrep, res, true);
+
+[res, g_youbot_armRefPos] = g_vrep.simxGetObjectPosition(g_id, g_h.armRef, -1, g_vrep.simx_opmode_buffer);
+vrchk(g_vrep, res, true);
+[res, g_youbot_armRefOri] = g_vrep.simxGetObjectOrientation(g_id, g_h.r22, -1, g_vrep.simx_opmode_buffer);
 vrchk(g_vrep, res, true);
 
 for i = 1:5,

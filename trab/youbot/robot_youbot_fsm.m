@@ -4,10 +4,13 @@ global g_vel;
 global g_youbotPos;
 global g_youbotEuler;
 global g_target_pos;
+global g_youbot_GripperTipPos;
 
 %persistent (global) variables
 global p_targetIndex;
 global p_targetPos;
+
+global g_youbot_gripper_targetPos;
 
 if nargin == 1
     g_fsm =  pFsm;
@@ -39,22 +42,23 @@ switch (g_fsm)
         g_fsm = 'goToNearTarget';
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'goToNearTarget'
-        [finishedRotate, g_vel.rotVel, error] = rotateTo();
-        if (error < pi/8)
-            [finishedMove ,  g_vel.forwBackVel,  g_vel.leftRightVel] =  moveToPosXY();
-        else
-            finishedMove = false;
-        end
+        [finishedRotate, g_vel.rotVel] = rotateTo();
+        [finishedMove ,  g_vel.forwBackVel,  g_vel.leftRightVel] =  moveToPosXY();
+      
         
         
         if (finishedMove && finishedRotate)
-            g_fsm = 'grabTarget';
+            gripper_setTarget(true, g_target_pos{p_targetIndex},g_target_pos{p_targetIndex} -  g_youbot_GripperTipPos);
+             fprintf('g_youbot_GripperTipPos:\t\t\tX: %f \tY: %f \tZ: %f\n',  g_youbot_GripperTipPos(1), g_youbot_GripperTipPos(2), g_youbot_GripperTipPos(3));
+         fprintf('g_youbot_gripper_targetPos:\t\tX: %f \tY: %f \tZ: %f\n', g_youbot_gripper_targetPos(1), g_youbot_gripper_targetPos(2), g_youbot_gripper_targetPos(3));
+         fprintf('g_target_pos{p_targetIndex}:\tX: %f \tY: %f \tZ: %f\n',  g_target_pos{p_targetIndex}(1),  g_target_pos{p_targetIndex}(2),  g_target_pos{p_targetIndex}(3));
+         fprintf('g_youbotPos:\t\t\t\t\tX: %f \tY: %f \tZ: %f\n',  g_youbotPos(1), g_youbotPos(2), g_youbotPos(3));
+
+            %g_fsm = 'grabTarget';
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'grabTarget'
-        
-        
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+               %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'nextTarget'
         if ( p_targetIndex >= length(g_target_pos))
             g_fsm = 'over';

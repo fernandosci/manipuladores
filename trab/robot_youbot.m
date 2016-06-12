@@ -61,8 +61,8 @@ while true,
     
     robot_youbot_fsm;
     
-    
-     gripper_joystick;
+%    
+%     gripper_joystick;
     
 %     key = kbhit;
 %     if (strcmpi(key,'L'))

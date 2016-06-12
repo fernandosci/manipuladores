@@ -32,7 +32,7 @@ if (nargin == 3)
     g_rotateTo_isRunning = true;
     g_rotateTo_mode = mode;
     g_rotateTo_axis = axis;
-elseif (g_rotateTo_isRunning || g_rotateTo_mode == 1)
+elseif ((g_rotateTo_isRunning == true) & (g_rotateTo_mode == 1))
     error = g_rotateTo_targetAng - g_youbotEuler;
     
     [ out, g_rotateTo_I(g_rotateTo_axis), g_rotateTo_lastError(g_rotateTo_axis) ] = pidYoubot( error(g_rotateTo_axis), g_rotateTo_lastError(g_rotateTo_axis), kp, ki, kd, g_rotateTo_I(g_rotateTo_axis), deltaT, minI, maxI, minOut, maxOut );
