@@ -60,11 +60,11 @@ while true,
     
     robot_youbot_continuosplot;
     
- %   robot_youbot_fsm;
+  robot_youbot_fsm;
     
 %    
-     gripper_joystick;
-     disp(g_youbot_gripper_tipPos);
+     %gripper_joystick;
+     %disp(g_youbot_gripper_tipPos);
     
 %     key = kbhit;
 %     if (strcmpi(key,'L'))

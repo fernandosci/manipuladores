@@ -22,6 +22,8 @@ rotm = eul2r(g_youbot_armRefPosOri);
 
 if (isGlobal)
     g_youbot_gripper_targetPos = (rotm'*(targetPos - g_youbot_armRefPos)')';
+else
+    g_youbot_gripper_targetPos = targetPos;
 end
 
 if (nargin >= 3)
