@@ -5,6 +5,7 @@ global g_h;
 global g_target_pos;
 global g_timestep;
 global g_VERBOSE;
+global g_time_elapsed;
 
 userinit;
 disp('initializing vrep thread');
@@ -49,7 +50,7 @@ angl = -pi/2;
 robot_youbot_fetch;
 
 robot_youbot_fsm('init');
-
+global g_youbot_gripper_tipPos;
 while true,
     tic
     if g_vrep.simxGetConnectionId(g_id) == -1,
@@ -59,10 +60,11 @@ while true,
     
     robot_youbot_continuosplot;
     
-    robot_youbot_fsm;
+ %   robot_youbot_fsm;
     
 %    
-%     gripper_joystick;
+     gripper_joystick;
+     disp(g_youbot_gripper_tipPos);
     
 %     key = kbhit;
 %     if (strcmpi(key,'L'))
@@ -77,13 +79,12 @@ while true,
         fprintf('forwBackVel: %f \tleftRightVel: %f \trotVel: %f\n', g_vel.forwBackVel, g_vel.leftRightVel, g_vel.rotVel);
     end
     g_h = youbot_drive(g_vrep, g_h, g_vel.forwBackVel, g_vel.leftRightVel, g_vel.rotVel);
-    
     g_vel.forwBackVel = 0;
     g_vel.leftRightVel = 0;
     g_vel.rotVel = 0;
     % Make sure that we do not go faster that the simulator
-    elapsed = toc;
-    timeleft = g_timestep-elapsed;
+    g_time_elapsed = toc;
+    timeleft = g_timestep-g_time_elapsed;
     if (timeleft > 0),
         pause(min(timeleft, .01));
     end

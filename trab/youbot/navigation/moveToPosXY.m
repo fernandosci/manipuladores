@@ -1,4 +1,4 @@
-function [ finished, forwBackVel, leftRightVel ] = moveToPosXY(mode, targetPos )
+function [ finished, forwBackVel, leftRightVel, err ] = moveToPosXY(mode, targetPos )
 
 global g_youbotPos;
 global g_MoveToPos_I;
@@ -9,10 +9,10 @@ global g_MoveToPos_mode;
 
 maxI = 0.1;
 minI = -maxI;
-maxOut = 240*pi/180;
+maxOut = 2;
 minOut = -maxOut;
 deltaT = 50e-3;
-kp = 4;
+kp = 1.6;
 ki = 0;
 kd = 0;
 limitError = 0.01;
@@ -28,6 +28,7 @@ if (nargin == 2)
     g_MoveToPos_I = [0 0];
     g_MoveToPos_isRunning = true;
     g_MoveToPos_mode = mode;
+    err = 0;
 elseif (g_MoveToPos_isRunning == true || g_MoveToPos_mode == 1)
     error = g_MoveToPos_targetPos - g_youbotPos;
     out = [0 0];
@@ -49,7 +50,7 @@ elseif (g_MoveToPos_isRunning == true || g_MoveToPos_mode == 1)
     forwBackVel = -outDist * cos(relativeAngle(3));
     leftRightVel = outDist * sin(relativeAngle(3));
     
-    
+    err = outDist;
     if (outDist > -limitError && outDist < limitError)
         finished = true;
         forwBackVel = 0;
@@ -64,6 +65,7 @@ else
     finished = true;
     forwBackVel = 0;
     leftRightVel = 0;
+    err = 0;
 end
 end
 

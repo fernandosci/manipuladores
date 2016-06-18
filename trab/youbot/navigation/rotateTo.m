@@ -10,7 +10,7 @@ global g_rotateTo_axis;
 
 maxI = 0.1;
 minI = -maxI;
-maxOut = 240*pi/180;
+maxOut = 2*pi;
 minOut = -maxOut;
 deltaT = 50e-3;
 kp = 1;
@@ -19,20 +19,19 @@ kd = 0;
 limitError = 0.01;
 axis = 3;
 
-if (nargin == 3)
+if (nargin == 2)
     
     finished = false;
     rotVel = 0;
     
     g_rotateTo_targetAng = sign(targetAng)*wrapTo2Pi(targetAng);
     g_rotateTo_lastError =  g_rotateTo_targetAng - g_youbotEuler;
-    disp(targetAng);
-    disp(g_rotateTo_targetAng);
     g_rotateTo_I = [0 0 0];
     g_rotateTo_isRunning = true;
     g_rotateTo_mode = mode;
     g_rotateTo_axis = axis;
-elseif ((g_rotateTo_isRunning == true) & (g_rotateTo_mode == 1))
+    err = 0;
+elseif (g_rotateTo_isRunning == true || g_rotateTo_mode == 1)
     error = g_rotateTo_targetAng - g_youbotEuler;
     
     [ out, g_rotateTo_I(g_rotateTo_axis), g_rotateTo_lastError(g_rotateTo_axis) ] = pidYoubot( error(g_rotateTo_axis), g_rotateTo_lastError(g_rotateTo_axis), kp, ki, kd, g_rotateTo_I(g_rotateTo_axis), deltaT, minI, maxI, minOut, maxOut );
@@ -64,6 +63,7 @@ elseif ((g_rotateTo_isRunning == true) & (g_rotateTo_mode == 1))
 else
     finished = true;
     rotVel = 0;
+    err = 0;
 end
 
 end

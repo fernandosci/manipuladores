@@ -33,9 +33,24 @@ global g_basket_ref;
 res = g_vrep.simxGetObjectVelocity (g_id, g_h.ref, g_vrep.simx_opmode_streaming); vrchk(g_vrep, res, true);
 
 global g_youbot_armRefPos;
+global g_youbot_armRefPosOri;
 global g_youbot_armRefOri;
 [res, g_youbot_armRefPos] = g_vrep.simxGetObjectPosition(g_id, g_h.armRef, -1, g_vrep.simx_opmode_streaming); vrchk(g_vrep, res, true);
+[res, g_youbot_armRefPosOri] = g_vrep.simxGetObjectOrientation(g_id, g_h.armRef, -1, g_vrep.simx_opmode_streaming); vrchk(g_vrep, res, true);
 [res, g_youbot_armRefOri] = g_vrep.simxGetObjectOrientation(g_id, g_h.r22, -1, g_vrep.simx_opmode_streaming); vrchk(g_vrep, res, true);
+
+% global g_youbot_joints_km_mode;
+% global g_youbot_joints_isOpen;
+% [res, g_youbot_joints_km_mode] = g_vrep.simxGetIntegerSignal(g_id,'km_mode',g_vrep.simx_opmode_streaming );vrchk(g_vrep, res, true);
+% [res, g_youbot_joints_isOpen] = g_vrep.simxGetIntegerSignal(g_id,'gripper_open',g_vrep.simx_opmode_streaming );vrchk(g_vrep, res, true);
+global g_youbot_joints_isOpen;
+g_youbot_joints_isOpen = -1;
+gripper_open(true);
+
+global g_youbot_joints_km_mode;
+g_youbot_joints_km_mode = -1;
+gripper_setKmMode(0);
+
 
 disp('...');
 pause(0.5);

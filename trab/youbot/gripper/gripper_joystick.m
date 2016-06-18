@@ -1,14 +1,15 @@
-function [ output_args ] = gripper_joystick(  )
+function [  ] = gripper_joystick(  )
 global g_vrep;
 global g_id;
 global g_h;
 
-global g_youbot_GripperTipPos;
-global g_youbot_GripperTipOri;
+global g_youbot_gripper_tipPos;
+global g_youbot_gripper_tipOri;
 global g_youbot_joints_position;
 
-tpos = g_youbot_GripperTipPos;
+tpos = g_youbot_gripper_tipPos;
 
+gripper_setKmMode(1);
 
 key = kbhit;
 inc = 0.05;
@@ -36,7 +37,7 @@ end
 res = g_vrep.simxSetObjectPosition(g_id, g_h.ptarget, g_h.armRef, tpos,...
     g_vrep.simx_opmode_oneshot);
 
-fprintf('g_youbotGripperTipPos:      [%f %f %f]\n',g_youbot_GripperTipPos(1),g_youbot_GripperTipPos(2),g_youbot_GripperTipPos(3));
+fprintf('g_youbotGripperTipPos:      [%f %f %f]\n',g_youbot_gripper_tipPos(1),g_youbot_gripper_tipPos(2),g_youbot_gripper_tipPos(3));
 fprintf('g_youbot_joints_position:   [%f %f %f %f %f]\n',g_youbot_joints_position(1),g_youbot_joints_position(2),g_youbot_joints_position(3),g_youbot_joints_position(4),g_youbot_joints_position(5));
 
 end

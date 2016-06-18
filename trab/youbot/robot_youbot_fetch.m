@@ -7,8 +7,10 @@ global g_h;
 
 %gripper
 global g_youbot_armRefPos;
-global g_youbot_GripperTipPos;
-global g_youbot_GripperTipOri;
+global g_youbot_armRefPosOri;
+global g_youbot_armRefOri;
+global g_youbot_gripper_tipPos;
+global g_youbot_gripper_tipOri;
 
 global g_youbot_joints_position;
 global g_youbot_joints_km_mode;
@@ -67,14 +69,16 @@ global g_youbotVelAng;
 
 
 %read gripper info
-[res, g_youbot_GripperTipPos] = g_vrep.simxGetObjectPosition(g_id, g_h.ptip, g_h.armRef,...
+[res, g_youbot_gripper_tipPos] = g_vrep.simxGetObjectPosition(g_id, g_h.ptip, g_h.armRef,...
     g_vrep.simx_opmode_buffer);
 vrchk(g_vrep, res, true);
-[res, g_youbot_GripperTipOri] = g_vrep.simxGetObjectOrientation(g_id, g_h.otip, g_h.r22,...
+[res, g_youbot_gripper_tipOri] = g_vrep.simxGetObjectOrientation(g_id, g_h.otip, g_h.r22,...
     g_vrep.simx_opmode_buffer);
 vrchk(g_vrep, res, true);
 
 [res, g_youbot_armRefPos] = g_vrep.simxGetObjectPosition(g_id, g_h.armRef, -1, g_vrep.simx_opmode_buffer);
+vrchk(g_vrep, res, true);
+[res, g_youbot_armRefPosOri] = g_vrep.simxGetObjectOrientation(g_id, g_h.armRef, -1, g_vrep.simx_opmode_buffer);
 vrchk(g_vrep, res, true);
 [res, g_youbot_armRefOri] = g_vrep.simxGetObjectOrientation(g_id, g_h.r22, -1, g_vrep.simx_opmode_buffer);
 vrchk(g_vrep, res, true);
@@ -83,7 +87,7 @@ for i = 1:5,
     [res, g_youbot_joints_position(i)] = g_vrep.simxGetJointPosition(g_id, g_h.armJoints(i), g_vrep.simx_opmode_buffer ); vrchk(g_vrep, res, true);
 end
 
-[res, g_youbot_joints_km_mode] = g_vrep.simxGetIntegerSignal(g_id,'km_mode',g_vrep.simx_opmode_buffer );vrchk(g_vrep, res, true);
-[res, g_youbot_joints_isOpen] = g_vrep.simxGetIntegerSignal(g_id,'gripper_open',g_vrep.simx_opmode_buffer );vrchk(g_vrep, res, true);
+%[res, g_youbot_joints_km_mode] = g_vrep.simxGetIntegerSignal(g_id,'km_mode',g_vrep.simx_opmode_streaming );vrchk(g_vrep, res, true);
+%[res, g_youbot_joints_isOpen] = g_vrep.simxGetIntegerSignal(g_id,'gripper_open',g_vrep.simx_opmode_streaming );vrchk(g_vrep, res, true);
 
 end
