@@ -2,7 +2,6 @@ function robot_youbot()
 global g_vrep;
 global g_id;
 global g_h;
-global g_target_pos;
 global g_timestep;
 global g_VERBOSE;
 global g_time_elapsed;
@@ -39,14 +38,6 @@ g_vel.rotVel = 0;
 pause(2);
 disp('Starting robot');
 
-
-[res homeGripperPosition] = ...
-    g_vrep.simxGetObjectPosition(g_id, g_h.ptip,...
-    g_h.armRef,...
-    g_vrep.simx_opmode_buffer);
-vrchk(g_vrep, res, true);
-angl = -pi/2;
-
 robot_youbot_fetch;
 
 robot_youbot_fsm('init');
@@ -60,19 +51,21 @@ while true,
     
     robot_youbot_continuosplot;
     
-  robot_youbot_fsm;
+    robot_youbot_fsm;
     
-%    
-     %gripper_joystick;
-     %disp(g_youbot_gripper_tipPos);
+    %joints = deg2rad([0, 75, 131, 102, 0]);
+    %gripper_setJoints(joints);
     
-%     key = kbhit;
-%     if (strcmpi(key,'L'))
-%         gripper_setJoints([-0.000101 1.139116 -0.123400 0.097244 0.000681]);
-%     elseif (strcmpi(key,'P'))
-%         gripper_setJoints([-3.132165 1.309131 0.916073 -0.011899 0.004175]);
-%     end
-
+    %gripper_joystick;
+    %disp(g_youbot_gripper_tipPos);
+    
+    %     key = kbhit;
+    %     if (strcmpi(key,'L'))
+    %         gripper_setJoints([-0.000101 1.139116 -0.123400 0.097244 0.000681]);
+    %     elseif (strcmpi(key,'P'))
+    %         gripper_setJoints([-3.132165 1.309131 0.916073 -0.011899 0.004175]);
+    %     end
+    
     
     % Update wheel velocities
     if (g_VERBOSE >= 1)

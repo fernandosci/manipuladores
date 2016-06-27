@@ -12,7 +12,7 @@ tpos = g_youbot_gripper_tipPos;
 gripper_setKmMode(1);
 
 key = kbhit;
-inc = 0.05;
+inc = 0.2;
 
 if (strcmpi(key, 'a')),
     tpos(1) = tpos(1) + inc;

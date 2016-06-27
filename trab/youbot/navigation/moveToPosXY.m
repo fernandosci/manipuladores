@@ -40,16 +40,26 @@ elseif (g_MoveToPos_isRunning == true || g_MoveToPos_mode == 1)
     globalAngle = globalAngleBetween2CartesianPointsXY(g_youbotPos, g_MoveToPos_targetPos);
     relativeAngle = angGlobalToRelative([0 0 globalAngle]);
 
+    
+    %avoid only 1 fixed obstacle
+    obtPos = [-1.5 -3 0];
+    %d = abs(cross(g_MoveToPos_targetPos-g_youbotPos,obtPos-g_youbotPos))/abs(g_MoveToPos_targetPos-g_youbotPos);
+    obtDist = distPoints(obtPos, g_youbotPos);
+    
+    if (error(index) > 1 && obtDist < 1)
+        obtAngle = globalAngleBetween2CartesianPointsXY(obtPos,g_youbotPos );
+        
+        x = cos(globalAngle) + cos(obtAngle);
+        y = sin(globalAngle) + sin(obtAngle);
+        newangle = atan2(y,x);
+        relativeAngle = angGlobalToRelative([0 0 newangle]);
+    end
+    
     outDist = sqrt(out(1)^2 + out(2)^2);
-    % outDist = sqrt(out(1)^2 + out(2)^2);
-    %negativo -> pra frente (0 graus)
-    %forwBackVel = -outDist * cos(relativeAngle(3));
-    %positivo -> pra esquerda (90 graus)
-    %leftRightVel = outDist * sin(relativeAngle(3));
     
     forwBackVel = -outDist * cos(relativeAngle(3));
     leftRightVel = outDist * sin(relativeAngle(3));
-    
+ 
     err = outDist;
     if (outDist > -limitError && outDist < limitError)
         finished = true;

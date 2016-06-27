@@ -6,6 +6,7 @@ global g_youbot_armRefPos;
 global g_youbot_armRefPosOri;
 global g_youbot_gripper_targetPos;
 global g_youbot_gripper_targetOri;
+global g_youbot_gripper_targetOri_enabled;
 global g_youbot_gripper_tipPos;
 
 if (nargin < 2 || nargin > 3)
@@ -27,7 +28,10 @@ else
 end
 
 if (nargin >= 3)
+    g_youbot_gripper_targetOri_enabled = true;
     g_youbot_gripper_targetOri = targetOri;
+elseif (nargin == 2)
+    g_youbot_gripper_targetOri_enabled = false;
 end
 
 
@@ -35,7 +39,7 @@ res = g_vrep.simxSetObjectPosition(g_id, g_h.ptarget, g_h.armRef, g_youbot_gripp
     g_vrep.simx_opmode_oneshot);
 vrchk(g_vrep, res, true);
 
-if (nargin >= 3)
+if (g_youbot_gripper_targetOri_enabled)
     res = g_vrep.simxSetObjectOrientation(g_id, g_h.otarget, g_h.r22, g_youbot_gripper_targetOri,...
         g_vrep.simx_opmode_oneshot);
     vrchk(g_vrep, res, true);
