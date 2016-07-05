@@ -25,6 +25,14 @@ N = cell(dim, 1);
 f = cell(dim, 1);
 n = cell(dim, 1);
 
+%Matrix de rotação do sistema i-1 para i
+R = cell(dim, 1);
+R{1} = eye(3);  %not used
+R{5} = eye(3);
+for i=2:4
+    R{i} = [cos(THETA(i)) -sin(THETA(i)) 0; cos(THETA(i)) -sin(THETA(i)) 0; 0 0 1];
+end
+
 torque = cell(dim, 1); %resultado final
 
 
@@ -37,14 +45,6 @@ G = -g;
 Z = cell(dim, 1); 
 for i=1:dim
     Z{i}= [0 0 1]';
-end
-
-%Matrix de rotação do sistema i-1 para i
-R = cell(dim, 1);
-R{1} = eye(3);  %not used
-R{5} = eye(3);
-for i=2:4
-    R{i} = [cos(THETA(i)) -sin(THETA(i)) 0; cos(THETA(i)) -sin(THETA(i)) 0; 0 0 1];
 end
 
 %posicao da junta i em relação a junta i-1
@@ -98,7 +98,7 @@ for i=2:4
     w1{i} =  R{i}*w1{i-1} + cross(  R{i}*w{i-1}, THETA1(i)*Z{i}) + THETA2(i)*Z{i};
     %calculo aceleração linear
     v1{i} =  R{i}*(cross( w1{i-1}, P{i}) + cross( w{i-1}, cross(w{i-1},P{i})) + v1{i-1});
-    %calculo aceleração lienar do centro de massa
+    %calculo aceleração linear do centro de massa
     v1C{i} = cross( w1{i}, PC{i}) + cross( w{i}, cross(w{i},PC{i})) + v1{i};
     
     %calculo forcas e torques inerciais agindo no centro de massa de cada
@@ -117,12 +117,12 @@ end
 
 %%%%%simulação%%%%%
 %tempo simulação
-delta=1;
+delta=2;
 tTotal=10;
 time=0:delta:tTotal;
 
 %constantes
-q0 = 1;
+q0 = 0;
 c0 = q0;
 c1 = 0;
 c2 = 0;
@@ -146,31 +146,119 @@ end
 %substituicoes e calculos
 thetaval = zeros(dim,length(time));
 theta1val = zeros(dim,length(time));
-theta2val = zeros(dim,1);
+theta2val = zeros(dim,length(time));
+
 
 torqueval = zeros(dim,length(time));
+velangval = zeros(dim,length(time));
 count = 0;
 for count=1:length(time)
     
-    temporary = cell(dim, 1);
+    temporaryTorque = cell(dim, 1);
+    temporaryW = cell(dim, 1);
     for i=2:4
         thetaval(i, count) = subs(thetaeq{i}, t, time(count));
         theta1val(i, count) = subs(theta1eq{i}, t, time(count));
-        theta2val(i) = subs(theta2eq{i}, t, time(count));
-        temporary{i} = torque{i};
+        theta2val(i, count) = subs(theta2eq{i}, t, time(count));
         
+        temporaryW{i} = w{i};
         for ii =2:4
-            temporary{i} = subs(temporary{i}, {THETA(ii), THETA1(ii), THETA2(ii)}, {thetaval(ii, count), theta1val(ii, count), theta2val(ii)});
+            temporaryW{i} = subs(temporaryW{i}, {THETA(ii), THETA1(ii), THETA2(ii)}, {thetaval(ii, count), theta1val(ii, count), theta2val(ii, count)});
         end
-        torqueval(i,count) = temporary{i};
+        velangval(i,count) = temporaryW{i}'*Z{i};
+        
+        temporaryTorque{i} = torque{i};
+        for ii =2:4
+            temporaryTorque{i} = subs(temporaryTorque{i}, {THETA(ii), THETA1(ii), THETA2(ii)}, {thetaval(ii, count), theta1val(ii, count), theta2val(ii, count)});
+        end
+        torqueval(i,count) = temporaryTorque{i};
     end
 end
 
 %%%%%plot%%%%%
-%torque
-figure
+lstyle = cell(dim, 1);
+lstyle{2} = ':';
+lstyle{3} = '--';
+lstyle{4} = '-';
+
+lcolor = cell(dim, 1);
+lcolor{2} = 'b';
+lcolor{3} = 'm';
+lcolor{4} = 'g';
+%velocidade w{i}
+
+%posicao
+figure(1)
 hold off
 for i=2:4
-    plot(time, theta1val(i,:));
+    p = plot(time, rad2deg(thetaval(i,:)));
+    p.LineStyle = lstyle{i};
+    p.Color = lcolor{i};
+    p.LineWidth = 2;
+    p.DisplayName = sprintf('Junta %d',i-1);
     hold on
 end
+grid on
+l = legend('show');
+l.Location = 'northwest';
+l.FontSize = 16;
+title('Posição das Juntas X Tempo');
+xlabel('Tempo (s)');
+ylabel('Posição da Junta (graus)');
+
+%velocidade w dos elos
+figure(2)
+hold off
+for i=2:4
+    p = plot(time, velangval(i,:));
+    p.LineStyle = lstyle{i};
+    p.Color = lcolor{i};
+    p.LineWidth = 2;
+    p.DisplayName = sprintf('Elo %d',i-1);
+    hold on
+end
+grid on
+l = legend('show');
+l.Location = 'northwest';
+l.FontSize = 16;
+title('Velocidade angular dos elos X Tempo');
+xlabel('Tempo (s)');
+ylabel('Velocidade angular dos elos (rad/s)');
+
+%velocidade w das juntas
+figure(3)
+hold off
+for i=2:4
+    p = plot(time, theta1val(i,:));
+    p.LineStyle = lstyle{i};
+    p.Color = lcolor{i};
+    p.LineWidth = 2;
+    p.DisplayName = sprintf('Junta %d',i-1);
+    hold on
+end
+grid on
+l = legend('show');
+l.Location = 'northwest';
+l.FontSize = 16;
+title('Velocidade angular das juntas X Tempo');
+xlabel('Tempo (s)');
+ylabel('Velocidade angular das juntas (rad/s)');
+
+%Torque nas juntas
+figure(4)
+hold off
+for i=2:4
+    p = plot(time, torqueval(i,:));
+    p.LineStyle = lstyle{i};
+    p.Color = lcolor{i};
+    p.LineWidth = 2;
+    p.DisplayName = sprintf('Junta %d',i-1);
+    hold on
+end
+grid on
+l = legend('show');
+l.Location = 'southwest';
+l.FontSize = 16;
+title('Torque nas juntas X Tempo');
+xlabel('Tempo (s)');
+ylabel('Torque nas juntas (Nm)');
