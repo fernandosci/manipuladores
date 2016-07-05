@@ -1,5 +1,6 @@
 %Aluno: Fernando Soares Carnevale Ito - 7152681
 clear all;
+close all;
 
 %Mapeamento junta - index
 %Index 1 - Origem
@@ -187,7 +188,7 @@ lcolor{3} = 'm';
 lcolor{4} = 'g';
 %velocidade w{i}
 
-%posicao
+%posicao das juntas
 figure(1)
 hold off
 for i=2:4
@@ -206,27 +207,8 @@ title('Posição das Juntas X Tempo');
 xlabel('Tempo (s)');
 ylabel('Posição da Junta (graus)');
 
-%velocidade w dos elos
-figure(2)
-hold off
-for i=2:4
-    p = plot(time, velangval(i,:));
-    p.LineStyle = lstyle{i};
-    p.Color = lcolor{i};
-    p.LineWidth = 2;
-    p.DisplayName = sprintf('Elo %d',i-1);
-    hold on
-end
-grid on
-l = legend('show');
-l.Location = 'northwest';
-l.FontSize = 16;
-title('Velocidade angular dos elos X Tempo');
-xlabel('Tempo (s)');
-ylabel('Velocidade angular dos elos (rad/s)');
-
 %velocidade w das juntas
-figure(3)
+figure(2)
 hold off
 for i=2:4
     p = plot(time, theta1val(i,:));
@@ -245,7 +227,7 @@ xlabel('Tempo (s)');
 ylabel('Velocidade angular das juntas (rad/s)');
 
 %Torque nas juntas
-figure(4)
+figure(3)
 hold off
 for i=2:4
     p = plot(time, torqueval(i,:));
