@@ -25,7 +25,7 @@ N = cell(dim, 1);
 f = cell(dim, 1);
 n = cell(dim, 1);
 
-%Matrix de rotação do sistema i-1 para i
+%Matrix de rotação do sistema i-1 para i em relacao ao eixo Z
 R = cell(dim, 1);
 R{1} = eye(3);  %not used
 R{5} = eye(3);
@@ -71,8 +71,8 @@ end
 
 %tensor de inercia da junta i
 IC = cell(dim, 1);
-IC{1} = [0 0 0]'; %not used
-IC{5} = [0 0 0]'; %not used
+IC{1} = eye(3); %not used
+IC{5} = eye(3); %not used
 for i=2:4
     IC{i} = [5e-5 0 0; 0 3.36e-3 0; 0 0 3.36e-3];
 end
@@ -81,7 +81,7 @@ end
 %%%%%condicoes iniciais%%%%%
 %acao da gravidade
 v1{1} = G;
-%referencial origem parado
+%referencial origem em repouso
 w{1} = [0 0 0]';
 w1{1} = [0 0 0]';
 %sem forças externas no efetuador
@@ -117,7 +117,7 @@ end
 
 %%%%%simulação%%%%%
 %tempo simulação
-delta=2;
+delta=0.1;
 tTotal=10;
 time=0:delta:tTotal;
 
