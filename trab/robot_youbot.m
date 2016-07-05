@@ -41,7 +41,7 @@ disp('Starting robot');
 robot_youbot_fetch;
 
 robot_youbot_fsm('init');
-global g_youbot_gripper_tipPos;
+
 while true,
     tic
     if g_vrep.simxGetConnectionId(g_id) == -1,

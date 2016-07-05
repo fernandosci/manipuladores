@@ -3,12 +3,10 @@ global g_fsm;
 global g_vel;
 
 global g_youbotPos;
-global g_youbotEuler;
 global g_gripper_dropPosition;
 
 global g_target_pos;
 
-global g_youbot_armRefPos;
 global g_youbot_gripper_tipPos;
 global g_youbot_gripper_targetPos;
 global g_youbot_joints_position;
@@ -80,18 +78,19 @@ switch (g_fsm)
             g_target_pos{p_targetIndex}, gripper_default_error ...
             );
         [ ~, p_gripper_path_index, ~ ] = gripper_followPath(true, p_gripper_data, true);
-
+        
         nextFsm('grabTarget');
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'grabTarget'
         continuousMotion;
-        [ finished, ~, ~] = gripper_followPath(true);
-        if (finished == true && p_fsm_localFlags(1) == 0)
-            gripper_open(false);
-            nonBlockingDelay(0.5);
-            p_fsm_localFlags(1) = 1;            
+        if (p_fsm_localFlags(1) == 0)
+            [ finished, ~, ~] = gripper_followPath(true);
+            if (finished == true && p_fsm_localFlags(1) == 0)
+                gripper_open(false);
+                nonBlockingDelay(0.5);
+                p_fsm_localFlags(1) = 1;
+            end
         end
-        
         if (p_fsm_localFlags(1) == 1)
             [finished] = nonBlockingDelay;
             if (finished)
@@ -100,13 +99,14 @@ switch (g_fsm)
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'retrieveObject'
+        continuousMotion;
         [ p_gripper_data ] = gripper_pathBuilder('n', g_gripper_dropPosition, gripper_default_error);
         [ finishedGripper, p_gripper_path_index, ~ ] = gripper_followPath(false, p_gripper_data, true);
         
         if (finishedGripper == true && p_fsm_localFlags(1) == 0)
             gripper_open(true);
             nonBlockingDelay(0.5);
-            p_fsm_localFlags(1) = 1;  
+            p_fsm_localFlags(1) = 1;
         end
         
         if (p_fsm_localFlags(1) == 1)
@@ -118,12 +118,12 @@ switch (g_fsm)
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    case 'setObjective'        
+    case 'setObjective'
         position = g_basket_pos - [0 0.4 0];
-
+        
         [~,  g_vel.forwBackVel,  g_vel.leftRightVel] = moveToPosXY(1, position);
         [~, g_vel.rotVel] = rotateTo(1,pi/2);
-         nextFsm('goToNearObjective');
+        nextFsm('goToNearObjective');
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'goToNearObjective'
@@ -161,9 +161,9 @@ switch (g_fsm)
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'shoot2'
         if (g_youbot_joints_position(2) > deg2rad(-50))
-           gripper_open(true); 
-           fprintf('OPEN!');
-           %nextFsm('setTarget');
+            gripper_open(true);
+            fprintf('OPEN!');
+            %nextFsm('setTarget');
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case 'nextTarget'
@@ -196,7 +196,7 @@ end
 function nextFsm(nextfsm)
 global g_fsm;
 global p_fsm_localFlags;
-    g_fsm = nextfsm;
-    p_fsm_localFlags = zeros(5,1);
+g_fsm = nextfsm;
+p_fsm_localFlags = zeros(5,1);
 end
 
