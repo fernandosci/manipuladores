@@ -1,10 +1,14 @@
 function robot_youbot()
+%ALUNO: FERNANDO SOARES CARNEVALE ITO
+%NUSP: 7152681
+
 global g_vrep;
 global g_id;
 global g_h;
 global g_timestep;
 global g_VERBOSE;
 global g_time_elapsed;
+global g_fsm;
 
 userinit;
 disp('initializing vrep thread');
@@ -44,6 +48,11 @@ robot_youbot_fsm('init');
 
 while true,
     tic
+    
+    if (strcmp(g_fsm,'over'))
+        return
+    end
+    
     if g_vrep.simxGetConnectionId(g_id) == -1,
         error('Lost connection to remote API.');
     end
